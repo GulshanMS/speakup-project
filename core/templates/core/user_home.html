@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}User Dashboard - SpeakUp{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-4">
+        <h1 class="display-5">Welcome, {{ user.username }}</h1>
+        <p class="lead">This is your SpeakUp dashboard. You can vote, suggest, or report anonymously.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Public Voting -->
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-4 border-0 mb-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Public Voting</h5>
+                    <p class="card-text">Cast your vote on ongoing topics anonymously.</p>
+                    <a href="{% url 'public_voting' %}" class="btn btn-outline-primary rounded-pill">Vote Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-4 border-0 mb-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Anonymous Suggestion</h5>
+                    <p class="card-text">Share thoughts or feedback safely and privately.</p>
+                    <a href="{% url 'anonymous_suggestion' %}" class="btn btn-outline-success rounded-pill">Suggest</a>
+                </div>
+            </div>
+        </div>
+        <!-- Raise Issue -->
+        <div class="col-md-4">
+            <div class="card shadow-sm rounded-4 border-0 mb-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Raise an Issue</h5>
+                    <p class="card-text">Report workplace concerns privately. We'll detect if it's urgent.</p>
+                    <a href="{% url 'raise_issue' %}" class="btn btn-outline-danger rounded-pill">Raise Issue</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

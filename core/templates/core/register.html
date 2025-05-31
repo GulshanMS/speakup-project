@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px, 40px 40px;
+            animation: patternMove 25s linear infinite;
+        }
+        
+        @keyframes patternMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+        
+        .geometric-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .shape {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 70px solid rgba(255, 255, 255, 0.05);
+            top: 15%;
+            right: 15%;
+            animation: triangleRotate 20s linear infinite;
+        }
+        
+        .hexagon {
+            width: 60px;
+            height: 34px;
+            background: rgba(255, 255, 255, 0.03);
+            position: relative;
+            bottom: 20%;
+            left: 10%;
+            animation: hexagonPulse 15s ease-in-out infinite;
+        }
+        
+        .hexagon:before,
+        .hexagon:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
+        
+        .hexagon:before {
+            bottom: 100%;
+            border-bottom: 17px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        .hexagon:after {
+            top: 100%;
+            border-top: 17px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        .diamond {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.04);
+            transform: rotate(45deg);
+            top: 60%;
+            right: 20%;
+            animation: diamondFloat 12s ease-in-out infinite;
+        }
+        
+        @keyframes triangleRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes hexagonPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+        }
+        
+        @keyframes diamondFloat {
+            0%, 100% { transform: rotate(45deg) translateY(0px); }
+            50% { transform: rotate(45deg) translateY(-20px); }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 32px;
+            padding: 50px 45px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+            animation: containerEntry 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes containerEntry {
+            from {
+                opacity: 0;
+                transform: translateY(80px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #667eea);
+            border-radius: 34px;
+            z-index: -1;
+            background-size: 300% 300%;
+            animation: gradientShift 6s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 45px;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 50%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            animation: titleSlide 1s ease-out 0.3s both;
+        }
+        
+        @keyframes titleSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+            animation: underlineExpand 0.8s ease-out 0.8s both;
+        }
+        
+        @keyframes underlineExpand {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+        
+        .error-message {
+            color: #e53e3e;
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.1) 0%, rgba(229, 62, 62, 0.05) 100%);
+            padding: 18px 24px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            border-left: 4px solid #e53e3e;
+            font-size: 0.95rem;
+            font-weight: 600;
+            animation: errorBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes errorBounce {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        
+        .input-group {
+            position: relative;
+            animation: inputSlide 0.6s ease-out both;
+        }
+        
+        .input-group:nth-child(2) { animation-delay: 0.2s; }
+        .input-group:nth-child(3) { animation-delay: 0.4s; }
+        .input-group:nth-child(4) { animation-delay: 0.6s; }
+        
+        @keyframes inputSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        label {
+            display: block;
+            color: #4a5568;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 20px 24px;
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            background: #ffffff;
+            color: #2d3748;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border: 2px solid #667eea;
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 
+                0 12px 35px rgba(102, 126, 234, 0.15),
+                0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        input::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            padding: 22px 45px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 25px;
+            box-shadow: 0 10px 35px rgba(102, 126, 234, 0.3);
+            animation: buttonSlide 0.6s ease-out 0.8s both;
+        }
+        
+        @keyframes buttonSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.8s;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        
+        button:active {
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        p {
+            text-align: center;
+            color: #718096;
+            margin-top: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            animation: linkSlide 0.6s ease-out 1s both;
+        }
+        
+        @keyframes linkSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 3px;
+        }
+        
+        a:hover::after {
+            width: 100%;
+        }
+        
+        a:hover {
+            color: #5a67d8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="geometric-shapes">
+        <div class="shape triangle"></div>
+        <div class="shape hexagon"></div>
+        <div class="shape diamond"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Register as User</h2>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Username:</label>
+                <input type="text" name="username" placeholder="Choose a unique username">
+            </div>
+            <div class="input-group">
+                <label>Password:</label>
+                <input type="password" name="password" placeholder="Create a strong password">
+            </div>
+            <div class="input-group">
+                <label>Confirm Password:</label>
+                <input type="password" name="confirm" placeholder="Confirm your password">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</body>
+</html>

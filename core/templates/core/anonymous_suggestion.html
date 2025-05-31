@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Anonymous Suggestion | SpeakUp{% endblock %}
+
+{% block content %}
+<style>
+    /* Fade-in Animation for the card */
+    .fade-in {
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Animated Border for Textarea */
+    .animated-textarea {
+        border: 2px solid #ccc;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: border 0.4s ease, box-shadow 0.4s ease;
+        background-color: #fff;
+        resize: vertical;
+        font-size: 1rem;
+    }
+
+    .animated-textarea:focus {
+        outline: none;
+        border: 2px solid transparent;
+        box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.25);
+        background-clip: padding-box;
+        border-image: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple)) 1;
+    }
+</style>
+
+<div class="container py-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header text-white rounded-top-4" style="background: var(--header-bg);">
+                    <h4 class="mb-0 fw-semibold">
+                        <i class="bi bi-envelope-paper-heart-fill me-2"></i>Anonymous Suggestion
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">Your voice matters. Submit your message anonymously and help us improve.</p>
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="message" class="form-label fw-semibold">Your Message</label>
+                            <textarea name="message" id="message" class="form-control animated-textarea" rows="6" placeholder="Type your anonymous message..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill">
+                            <i class="fas fa-paper-plane me-2"></i>Submit
+                        </button>
+                    </form>
+
+                    {% if messages %}
+                        <div class="alert alert-info alert-dismissible fade show mt-4" role="alert">
+                            <ul class="mb-0 ps-3">
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white text-end rounded-bottom-4 px-4 py-3">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

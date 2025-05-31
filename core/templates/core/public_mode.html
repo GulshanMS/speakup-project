@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Whistleblower Public Mode</title>
+</head>
+<body>
+    <h1>Public Mode - Whistleblower</h1>
+
+    {% if current_topic %}
+        <h2>Vote on: {{ current_topic.title }}</h2>
+        <p>{{ current_topic.description }}</p>
+
+        {% if not already_voted %}
+        <form method="post">
+            {% csrf_token %}
+            <label>
+                <input type="radio" name="choice" value="Yes"> Yes
+            </label>
+            <label>
+                <input type="radio" name="choice" value="No"> No
+            </label>
+            <button type="submit" name="vote_submit">Submit Vote</button>
+        </form>
+        {% else %}
+            <p><strong>You already voted.</strong></p>
+        {% endif %}
+    {% else %}
+        <p>No active topics to vote on.</p>
+    {% endif %}
+
+    <hr>
+    <h2>Submit Anonymous Suggestion</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="suggestion_topic">Topic:</label>
+        <select name="suggestion_topic">
+            {% for t in topics %}
+                <option value="{{ t.id }}">{{ t.title }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <textarea name="suggestion" rows="4" cols="50" placeholder="Enter your suggestion..."></textarea><br>
+        <button type="submit" name="suggestion_submit">Send Suggestion</button>
+    </form>
+
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

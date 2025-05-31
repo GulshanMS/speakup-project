@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">🗳️ Anonymous Voting</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  {% if topics|length > 1 %}
+    <form method="get" class="mb-3 text-center">
+      <label for="topic" class="form-label">Choose a topic:</label>
+      <select name="topic" id="topic" class="form-select w-auto d-inline-block">
+        {% for t in topics %}
+          <option value="{{ t.id }}" {% if t.id == topic.id %}selected{% endif %}>{{ t.question }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-sm btn-primary">Switch</button>
+    </form>
+  {% endif %}
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4 class="card-title">{{ topic.question }}</h4>
+
+      {% if topic.description %}
+        <details class="mb-3 bg-blue-50 border-l-4 border-blue-500 p-2 rounded">
+          <summary class="cursor-pointer text-blue-700 font-semibold">ℹ️ About this topic</summary>
+          <p class="text-gray-800 mt-2">{{ topic.description }}</p>
+        </details>
+      {% endif %}
+
+      {% if already_voted %}
+        <p class="text-success"><strong>You have already voted.</strong></p>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="topic_id" value="{{ topic.id }}">
+
+          {% for choice in topic.choices.all %}
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="choice" value="{{ choice.id }}" id="choice_{{ forloop.counter }}" required>
+              <label class="form-check-label" for="choice_{{ forloop.counter }}">{{ choice.text }}</label>
+            </div>
+          {% endfor %}
+
+          <!-- Justification Field -->
+          <div class="mt-3">
+            <label for="justification">🗨️ Why this choice? (optional)</label>
+            <textarea name="justification" rows="2" cols="40" class="form-control" placeholder="Write 1–2 lines..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success mt-3">Submit Vote</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if show_results %}
+    <!-- Voting Results Section -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Voting Results:</h4>
+        <ul>
+          {% for choice, data in results.items %}
+            <li>{{ choice }}: {{ data.count }} votes ({{ data.percent }}%)</li>
+          {% endfor %}
+        </ul>
+
+        <!-- Chart Container -->
+        <canvas id="voteChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+  {% endif %}
+
+  <a href="{% url 'anonymous_entry' %}" class="btn btn-outline-secondary">⬅ Back to Entry</a>
+</div>
+{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Ensure the DOM is fully loaded before trying to access the canvas element.
+    // This prevents errors if the script runs before the canvas is rendered.
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('voteChart').getContext('2d');
+
+        // Check if chart_labels and chart_data are available and valid JSON.
+        // If they are coming from Django context, they should be correctly formatted.
+        // Using JSON.parse to ensure they are parsed as actual JavaScript arrays.
+        const chartLabels = JSON.parse("{{ chart_labels|safe }}");
+        const chartData = JSON.parse("{{ chart_data|safe }}");
+
+        const voteChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Votes',
+                    data: chartData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Often useful for responsive charts
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        // Ensure stepSize is set correctly.
+                        // For integer votes, it's usually 1.
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

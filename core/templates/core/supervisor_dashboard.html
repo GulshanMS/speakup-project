@@ -1,0 +1,9 @@
+<h2>Supervisor Dashboard</h2>
+{% for topic in topics %}
+  <h3>{{ topic.title }}</h3>
+  <ul>
+    {% for vote in topic.votes.all %}
+      <li>{{ vote.choice }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}

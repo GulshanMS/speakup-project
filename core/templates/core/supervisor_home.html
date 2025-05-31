@@ -1,0 +1,264 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ+L3W9WghfM5hXgpxK3q3vSzn99fD7pDzIevLsYff31vTxz4i+/Z8bKhFOu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background-color: #f4f6f9;
+        }
+
+        h2, h3 {
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .container {
+            margin-top: 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #004085;
+        }
+
+        .table th, .table td {
+            padding: 1.2rem;
+            vertical-align: middle;
+            font-size: 1rem;
+        }
+
+        .table-dark {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2.5rem;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #007bff, #0069d9);
+            color: white;
+            font-size: 1.3rem;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .list-group-item {
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545;
+        }
+
+        .modal-body {
+            font-size: 1.1rem;
+        }
+
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .table td {
+            font-size: 1rem;
+        }
+
+        .table th {
+            font-size: 1.1rem;
+        }
+
+        /* Custom Button Styling */
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Modal button */
+        .btn-close {
+            background-color: #dc3545;
+            border-radius: 50%;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5" style="
+    font-family: 'Roboto', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #212529;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    padding-bottom: 15px;
+    position: relative;
+    display: inline-block;
+    border-bottom: 4px solid #007bff; /* Blue underline with thickness */
+">
+    Supervisor Dashboard
+</h2>
+
+    <!-- Manage Vote Topics Link -->
+    <div class="text-center mb-5">
+        <a href="{% url 'manage_vote_topics' %}" class="btn btn-outline-primary mt-3" style="
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            border-radius: 25px;
+            border: 2px solid #007bff;
+            transition: all 0.3s ease-in-out;
+        ">
+            <i class="fas fa-cogs me-2"></i> Manage Vote Topics
+        </a>
+    </div>
+
+    <!-- Voting Results Section -->
+    <section class="mb-5">
+        <h3 class="section-title">Voting Results</h3>
+        <table class="table table-hover table-bordered shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Topic</th>
+                    <th>Choice</th>
+                    <th>Votes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vote in vote_results %}
+                <tr>
+                    <td>{{ vote.topic__title }}</td>
+                    <td>{{ vote.choice }}</td>
+                    <td>{{ vote.total }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="text-center">No votes found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Suggestions Section -->
+    <section class="mb-5">
+        <h3 class="section-title">Anonymous Suggestions</h3>
+        <ul class="list-group shadow-sm rounded">
+            {% for suggestion in suggestions %}
+            <li class="list-group-item border-0 mb-3 p-4 shadow-sm rounded">
+                <strong class="d-block text-dark">{{ suggestion.topic.question|default:"General Suggestion" }}</strong>
+                <p class="text-muted">{{ suggestion.message|linebreaksbr }}</p>
+                <small class="text-muted">{{ suggestion.submitted_at }}</small>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-center">No suggestions found.</li>
+            {% endfor %}
+        </ul>
+        <p class="mt-3"><strong>Suggestions Found:</strong> {{ suggestions|length }}</p>
+    </section>
+
+    <!-- Issues Section -->
+    <section class="mb-5">
+        <h3 class="section-title">Reported Issues</h3>
+        <table class="table table-striped table-bordered shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Emergency</th>
+                    <th>Submitted At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr {% if issue.is_emergency %}class="table-danger"{% endif %}>
+                    <td>{{ issue.title }}</td>
+                    <td>{{ issue.category }}</td>
+                    <td>{{ issue.description|linebreaksbr }}</td>
+                    <td>{% if issue.is_emergency %}<span class="badge bg-danger">Yes</span>{% else %}No{% endif %}</td>
+                    <td>{{ issue.submitted_at }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center">No issues reported.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Keyword Frequency Chart Section -->
+    <section class="mb-5">
+        <h3 class="section-title">Reported Issues (Keyword Frequency)</h3>
+        <div class="card shadow-sm rounded">
+            <div class="card-body">
+                <canvas id="issueChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🔍 Modal Section -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Messages for <span id="modalKeyword"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalMessages"></div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- END container -->
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script id="chart-data" type="application/json">{{ issue_chart_data|safe }}</script>
+<script id="keyword-messages" type="application/json">{{ keyword_to_messages|safe }}</script>
+<script src="{% static 'core/js/issues_chart.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Manage Vote Topics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Vote Topics</h2>
+
+    <form method="post" class="mb-5 p-4 border rounded bg-light shadow-sm" id="voteForm">
+        {% csrf_token %}
+
+        <h4 class="mb-3">Create New Topic</h4>
+        {{ topic_form.as_p }}
+
+        <h5 class="mt-4">Choices (at least 2 required)</h5>
+
+        <!-- Formset Management -->
+        {{ formset.management_form }}
+        <div id="choices-container">
+            {% for form in formset %}
+                <div class="form-group mb-2 choice-form">
+                    {{ form.text.label_tag }} {{ form.text }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-outline-primary mb-3" id="add-choice">➕ Add Choice</button><br>
+
+        <button type="submit" class="btn btn-primary">Add Topic</button>
+    </form>
+
+    <!-- Existing Topics -->
+    <hr>
+    <h4 class="mb-3">Existing Topics</h4>
+    {% if topics %}
+        <ul class="list-group">
+            {% for topic in topics %}
+            <li class="list-group-item">
+                <strong>{{ topic.question }}</strong> (Deadline: {{ topic.deadline|date:"Y-m-d H:i" }})<br>
+                <small class="text-muted">{{ topic.description }}</small><br>
+                <span class="badge bg-success mt-1">{{ topic.is_active|yesno:"Active,Inactive" }}</span>
+                <br>
+                <strong>Choices:</strong>
+                <ul class="mb-2">
+                    {% for choice in topic.choices.all %}
+                        <li>{{ choice.text }}</li>
+                    {% empty %}
+                        <li>No choices.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info">No topics available.</div>
+    {% endif %}
+</div>
+
+<!-- JS to handle dynamic addition of choice fields -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('choices-container');
+        const addBtn = document.getElementById('add-choice');
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+
+        addBtn.addEventListener('click', () => {
+            const currentFormCount = parseInt(totalForms.value);
+            const newFormHtml = `
+                <div class="form-group mb-2 choice-form">
+                    <label for="id_form-${currentFormCount}-text">Text:</label>
+                    <input type="text" name="form-${currentFormCount}-text" class="form-control" id="id_form-${currentFormCount}-text">
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newFormHtml);
+            totalForms.value = currentFormCount + 1;
+        });
+    });
+</script>
+{% endblock %}

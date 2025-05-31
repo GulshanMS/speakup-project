@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Whistleblower Entry | SpeakUp{% endblock %}
+
+{% block content %}
+<style>
+    /* Smooth entrance animation */
+    .fade-in {
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .entry-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .entry-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .entry-links a {
+        display: block;
+        padding: 1rem 1.25rem;
+        border-radius: 0.75rem;
+        background: #f4f4f4;
+        color: var(--primary-purple);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+        border: 1px solid #e0e0e0;
+    }
+
+    .entry-links a:hover {
+        background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        color: #fff;
+        border-color: transparent;
+    }
+</style>
+
+<div class="container py-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card entry-card">
+                <div class="card-header text-white" style="background: var(--header-bg); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-secret me-2"></i>Welcome Whistleblower
+                    </h3>
+                </div>
+                <div class="card-body entry-links">
+                    <p class="text-muted">Please choose an option below to continue:</p>
+                    <a href="{% url 'public_voting' %}">
+                        <i class="fas fa-vote-yea me-2"></i>Public Voting
+                    </a>
+                    <a href="{% url 'anonymous_suggestion' %}">
+                        <i class="fas fa-comment-dots me-2"></i>Send Anonymous Suggestion
+                    </a>
+                </div>
+                <div class="card-footer text-end bg-light rounded-bottom-4 px-4 py-3">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="fas fa-home me-1"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
